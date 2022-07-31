@@ -1,27 +1,25 @@
-import React,{useState,useContext} from 'react';
-import {View,Text,StyleSheet,TextInput} from 'react-native';
+import React,{useContext} from 'react';
+import {StyleSheet} from 'react-native';
 import { Context as BlogContext} from '../context/BlogContext'
+import BlogPostForm from '../components/BlogPostForm';
 
 
 const EditScreen = ({ navigation }) => {
 
-    const { state} = useContext(BlogContext);
+    const id = navigation.getParam('id');
 
+    const { state, editBlogPost} = useContext(BlogContext);
     const blogPost = state.find(
-        blogPost => blogPost.id === navigation.getParam('id')
+        blogPost => blogPost.id === id
     );
-
-   const [title,setTitle] = useState(blogPost.title);
-   const [content,setContent] = useState(blogPost.content);
-
-
     return (
-        <View>
-            <Text>Enter New Title:</Text>
-            <TextInput value={title} onChangeText= {(newTitleText) => setTitle(newTitleText)}/>
-        </View>
+       <BlogPostForm 
+            initialValues={{ title: blogPost.title, content: blogPost.content}}
+            onSubmit={ (title,content) => {
+             editBlogPost(id, title,content,() => navigation.pop());
+            }}
+        />
     );
-
 };
 
 
